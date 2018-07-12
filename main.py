@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session, url_for
+from flask import Flask, request, redirect, render_template 
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -8,14 +8,13 @@ username = ""
 
 @app.route('/')
 def index():
-    app.secret_key = 'SDHFH(*#R&*(DGVFHNSDFJLHSDKHFJLDHJSF*(ASD^&F)DY*USHN'
+#     app.secret_key = 'SDHFH(*#R&*(DGVFHNSDFJLHSDKHFJLDHJSF*(ASD^&F)DY*USHN'
     return render_template('base.html',title="User Signup")
 
 @app.route('/submit', methods=['POST'])
 def submit_credentials():
     # Process Username.
     username=request.form['username']
-    username = session['username'] 
     username_error = ""
 
     # Verify if Username is correct...
@@ -49,7 +48,7 @@ def submit_credentials():
         
     # Render some templates.
     if not password_error and not username_error and not password_error and not password_verify_error and not email_error:
-        return redirect('/welcome')
+        return redirect('/welcome?username=' + username)
     else:
         return render_template('base.html', username=username, username_error=username_error, 
              password_error=password_error, password_verify_error=password_verify_error, email=email, 
@@ -57,6 +56,6 @@ def submit_credentials():
 
 @app.route('/welcome')
 def welcome():
-    return render_template('welcome.html',username=username)
+    return render_template('welcome.html',username=request.args.get('username'))
 
 app.run()
